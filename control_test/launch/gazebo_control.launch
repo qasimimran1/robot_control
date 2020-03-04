@@ -1,0 +1,39 @@
+<launch>
+  <param name="robot_description" textfile="$(find control_test)/urdf/myTestRobot.urdf" />
+  <rosparam file= "$(find control_test)/config/joint_names.yaml"/>
+  <arg name="x" default="0.0" />
+  <arg name="y" default="0.0" />
+  <arg name="z" default="0.0" />
+  
+  
+  
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <!--arg name="world_name" value="worlds/mud.world"/--> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="recording" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+        args="-param robot_description -urdf -model phoebe  -x $(arg x) -y $(arg y) -z $(arg z)" />
+
+  <rosparam file="$(find control_test)/config/controllers_robot.yaml" command="load"/>
+  
+  
+  <rosparam file="$(find control_test)/config/gazebo_controller.yaml" command="load" />
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        args=" 
+		       dual_arm_controller
+			   right_gripper_controller
+			   left_gripper_controller
+		       wheels_controller			   
+		"
+		/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher"
+        type="robot_state_publisher"/>
+
+</launch>

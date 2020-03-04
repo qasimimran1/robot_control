@@ -1,0 +1,4 @@
+<launch>
+        <!-- Generates the URDF, useful for incorporating the manipulator in your own robot description -->
+        <node name="xacro" pkg="xacro" type="xacro" args="--inorder -o $(find control_test)/urdf/myTestRobot.urdf $(find control_test)/urdf/testRobot.urdf.xacro" />
+</launch>
